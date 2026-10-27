@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Quote Generator</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            padding: 40px 30px;
+            text-align: center;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        h1 {
+            color: #563d9b;
+            margin-bottom: 12px;
+            font-size: 30px;
+        }
+
+        .subtitle {
+            color: #777;
+            margin-bottom: 30px;
+        }
+
+        .quote-mark {
+            font-size: 65px;
+            line-height: 1;
+            color: #764ba2;
+        }
+
+        #quote {
+            font-size: 23px;
+            line-height: 1.6;
+            color: #333;
+            margin: 15px 0 20px;
+            overflow-wrap: anywhere;
+        }
+
+        #author {
+            color: #764ba2;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 13px 22px;
+            border: none;
+            border-radius: 30px;
+            background: #667eea;
+            color: white;
+            font-size: 15px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        button:hover {
+            background: #4b55b5;
+            transform: translateY(-2px);
+        }
+
+        #shareBtn {
+            background: #764ba2;
+        }
+
+        #shareBtn:hover {
+            background: #563d9b;
+        }
+
+        #message {
+            margin-top: 20px;
+            color: #555;
+            font-size: 14px;
+        }
+
+        footer {
+            margin-top: 30px;
+            color: #999;
+            font-size: 13px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 25px;
+            }
+
+            #quote {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="container">
+        <h1>✨ Random Quote Generator</h1>
+        <p class="subtitle">A little inspiration for your day</p>
+
+        <div class="quote-mark">“</div>
+
+        <p id="quote" aria-live="polite">
+            The secret of getting ahead is getting started.
+        </p>
+
+        <p id="author">— Mark Twain</p>
+
+        <div class="buttons">
+            <button id="newQuoteBtn">New Quote ✨</button>
+            <button id="shareBtn">Share Quote ↗</button>
+        </div>
+
+        <p id="message" aria-live="polite"></p>
+
+        <footer>Made with ❤️ using HTML, CSS & JavaScript</footer>
+    </main>
+
+    <script>
+        // Quotes stored as objects in an array
+        const quotes = [
+            {
+                quote: "The secret of getting ahead is getting started.",
+                author: "Mark Twain"
+            },
+            {
+                quote: "Believe you can and you're halfway there.",
+                author: "Theodore Roosevelt"
+            },
+            {
+                quote: "It always seems impossible until it's done.",
+                author: "Nelson Mandela"
+            },
+            {
+                quote: "Dream big and dare to fail.",
+                author: "Norman Vaughan"
+            },
+            {
+                quote: "Success is the sum of small efforts repeated daily.",
+                author: "Robert Collier"
+            },
+            {
+                quote: "The future depends on what you do today.",
+                author: "Mahatma Gandhi"
+            },
+            {
+                quote: "Do what you can, with what you have, where you are.",
+                author: "Theodore Roosevelt"
+            },
+            {
+                quote: "Great things are done by a series of small things brought together.",
+                author: "Vincent van Gogh"
+            },
+            {
+                quote: "Your limitation—it's only your imagination.",
+                author: "Unknown"
+            },
+            {
+                quote: "Push yourself, because no one else will do it for you.",
+                author: "Unknown"
+            },
+            {
+                quote: "Every moment is a fresh beginning.",
+                author: "T. S. Eliot"
+            },
+            {
+                quote: "It is never too late to be what you might have been.",
+                author: "George Eliot"
+            },
+            {
+                quote: "Believe in yourself and all that you are.",
+                author: "Christian D. Larson"
+            },
+            {
+                quote: "Small steps every day lead to big results.",
+                author: "Unknown"
+            },
+            {
+                quote: "Stay hungry, stay foolish.",
+                author: "Steve Jobs"
+            }
+        ];
+
+        const quoteElement = document.getElementById("quote");
+        const authorElement = document.getElementById("author");
+        const newQuoteBtn = document.getElementById("newQuoteBtn");
+        const shareBtn = document.getElementById("shareBtn");
+        const messageElement = document.getElementById("message");
+
+        let previousIndex = 0;
+
+        // Display a random quote without immediate repetition
+        function generateQuote() {
+            let randomIndex;
+
+            if (quotes.length <= 1) {
+                randomIndex = 0;
+            } else {
+                do {
+                    randomIndex = Math.floor(
+                        Math.random() * quotes.length
+                    );
+                } while (randomIndex === previousIndex);
+            }
+
+            previousIndex = randomIndex;
+
+            quoteElement.textContent =
+                quotes[randomIndex].quote;
+
+            authorElement.textContent =
+                "— " + quotes[randomIndex].author;
+
+            messageElement.textContent = "";
+        }
+
+        // Share the current quote
+        async function shareQuote() {
+            const text =
+                '"' + quoteElement.textContent + '"\n' +
+                authorElement.textContent;
+
+            messageElement.textContent = "";
+
+            try {
+                if (navigator.share) {
+                    await navigator.share({
+                        title: "Inspirational Quote",
+                        text: text
+                    });
+                } else if (navigator.clipboard &&
+                           window.isSecureContext) {
+                    await navigator.clipboard.writeText(text);
+                    messageElement.textContent =
+                        "Quote copied! You can share it now.";
+                } else {
+                    messageElement.textContent =
+                        "Select and copy the quote to share it.";
+                }
+            } catch (error) {
+                if (error.name !== "AbortError") {
+                    messageElement.textContent =
+                        "Unable to share. Please copy the quote.";
+                }
+            }
+        }
+
+        // Button event listeners
+        newQuoteBtn.addEventListener("click", generateQuote);
+        shareBtn.addEventListener("click", shareQuote);
+    </script>
+
+</body>
+</html>
